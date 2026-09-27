@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سنة كاملة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0a13; --bg2:#15101f; --card:rgba(255,255,255,.055); --card-b:rgba(255,255,255,.1);
+  --gold:#d9a566; --rose:#e6a4b4; --violet:#8a6fc9; --ink:#f3ecf0; --muted:#a99bb0;
+  --serif:'Amiri',serif; --sans:'Tajawal',sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  box-sizing:border-box;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth; scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  background:radial-gradient(ellipse at 50% 0%, var(--bg2), var(--bg) 60%);
+  color:var(--ink); font-family:var(--sans); overflow-x:hidden; min-height:100%;
+}
+#stars{position:fixed; inset:0; z-index:0; pointer-events:none;}
+.section{position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px; text-align:center;}
+.reveal{opacity:0; transform:translateY(24px); transition:opacity .9s ease, transform .9s ease;}
+.reveal.in{opacity:1; transform:none;}
+
+/* Intro */
+#intro{cursor:default;}
+#intro h1{font-family:var(--serif); font-size:clamp(28px,5vw,46px); font-weight:400; line-height:1.5; color:var(--ink);}
+#intro .date{margin-top:18px; font-family:var(--serif); font-size:clamp(20px,4vw,28px); letter-spacing:4px; color:var(--gold);}
+#startBtn{
+  margin-top:56px; padding:16px 46px; border:1px solid var(--gold); border-radius:40px; background:transparent;
+  color:var(--gold); font-family:var(--sans); font-size:17px; cursor:pointer; transition:all .5s ease; position:relative;
+}
+#startBtn:hover{background:var(--gold); color:#1a1420; box-shadow:0 0 40px rgba(217,165,102,.35);}
+#app{display:none; position:relative; z-index:1;}
+
+h2.title{font-family:var(--serif); font-size:clamp(24px,4vw,36px); font-weight:400; margin-bottom:14px;}
+p.sub{color:var(--muted); font-size:16px; max-width:480px; margin:0 auto 40px; line-height:2;}
+
+/* Countdown */
+.timer{display:flex; gap:16px; flex-wrap:wrap; justify-content:center;}
+.unit{background:var(--card); border:1px solid var(--card-b); backdrop-filter:blur(14px); border-radius:18px; padding:22px 18px; min-width:88px;}
+.unit .num{font-family:var(--serif); font-size:clamp(32px,6vw,52px); color:var(--gold); position:relative; height:1.2em; overflow:hidden;}
+.unit .num span{display:block;}
+.unit .lbl{margin-top:8px; font-size:13px; color:var(--muted);}
+
+/* Celebration */
+#celebration{display:none;}
+#celebration.show{display:flex;}
+.celebrate-title{font-family:var(--serif); font-size:clamp(34px,7vw,58px); color:var(--rose); text-shadow:0 0 40px rgba(230,164,180,.5);}
+.arrow-dates{margin-top:34px; font-size:18px; color:var(--muted); line-height:2.3;}
+.arrow-dates b{color:var(--ink); font-weight:500;}
+
+canvas#confetti{position:fixed; inset:0; z-index:5; pointer-events:none;}
+
+/* Live counter */
+.counter-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; max-width:520px; width:100%;}
+.counter-grid .unit{min-width:0;}
+
+/* Message */
+.msg-card{background:var(--card); border:1px solid var(--card-b); backdrop-filter:blur(14px); border-radius:24px; padding:46px 34px; max-width:560px; line-height:2.4; font-size:17px; color:var(--ink);}
+.msg-card b{color:var(--rose); font-weight:500;}
+
+/* Timeline */
+.timeline{display:flex; flex-direction:column; gap:36px; max-width:520px; width:100%;}
+.tl-item{background:var(--card); border:1px solid var(--card-b); border-radius:20px; padding:20px; display:flex; gap:18px; align-items:center; text-align:right;}
+.tl-photo{width:88px; height:88px; border-radius:14px; flex:none; background:linear-gradient(135deg, rgba(217,165,102,.25), rgba(138,111,201,.25)); border:1px dashed var(--card-b); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted); overflow:hidden;}
+.tl-photo img{width:100%; height:100%; object-fit:cover;}
+.tl-text .tl-date{font-size:13px; color:var(--gold); margin-bottom:4px;}
+.tl-text .tl-title{font-family:var(--serif); font-size:19px;}
+
+/* Small details */
+.detail-cards{display:flex; flex-wrap:wrap; gap:18px; justify-content:center; max-width:600px;}
+.dc{background:var(--card); border:1px solid var(--card-b); border-radius:18px; padding:26px 22px; min-width:160px; transition:transform .4s ease, box-shadow .4s ease;}
+.dc:hover{transform:translateY(-6px); box-shadow:0 16px 40px rgba(0,0,0,.35);}
+.dc .dc-label{font-family:var(--serif); font-size:16px; color:var(--rose); margin-bottom:6px;}
+.dc .dc-val{color:var(--muted); font-size:14px;}
+
+/* Envelope */
+#envWrap{min-height:60vh;}
+#openEnvBtn{padding:16px 40px; border-radius:40px; border:1px solid var(--rose); background:transparent; color:var(--rose); font-family:var(--sans); font-size:16px; cursor:pointer; transition:all .5s ease;}
+#openEnvBtn:hover{background:var(--rose); color:#1a1420; box-shadow:0 0 40px rgba(230,164,180,.35);}
+.envelope{width:200px; height:130px; margin:40px auto 0; position:relative; display:none;}
+.envelope.show{display:block;}
+.env-body{position:absolute; inset:0; background:linear-gradient(160deg,var(--violet),var(--rose)); border-radius:8px; box-shadow:0 20px 50px rgba(0,0,0,.4);}
+.env-flap{position:absolute; top:0; left:0; right:0; height:65px; background:linear-gradient(160deg,#9d82d6,#efb3c1); clip-path:polygon(0 0,100% 0,50% 100%); transform-origin:top; transition:transform 1.1s cubic-bezier(.6,-0.28,.24,1.34); border-radius:8px 8px 0 0;}
+.env-flap.open{transform:rotateX(180deg);}
+.env-letter{position:absolute; left:14px; right:14px; bottom:-10px; background:#fdf8f0; color:#332a2e; border-radius:6px; padding:14px; font-size:12px; opacity:0; transition:all 1s ease .3s; text-align:center;}
+.env-letter.show{opacity:1; bottom:-60px;}
+.final-msg{display:none; margin-top:90px; max-width:520px; line-height:2.5; font-size:18px;}
+.final-msg.show{display:block;}
+.final-line{margin-top:40px; font-family:var(--serif); font-size:clamp(22px,4vw,30px); color:var(--gold); letter-spacing:2px;}
+
+/* music */
+#musicBtn{position:fixed; bottom:20px; left:20px; z-index:20; width:48px; height:48px; border-radius:50%; border:1px solid var(--card-b); background:var(--card); backdrop-filter:blur(10px); color:var(--ink); font-size:18px; cursor:pointer; padding-bottom:env(safe-area-inset-bottom,0px);}
+
+@media (max-width:480px){
+  .counter-grid{grid-template-columns:repeat(2,1fr);}
+  .tl-item{flex-direction:column; text-align:center;}
+}
+@media (prefers-reduced-motion: reduce){
+  .reveal{transition:none; opacity:1; transform:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ CONFIG — عدّل هنا فقط ============ -->
+<script>
+const CONFIG = {
+  startDate: "2025-09-28T00:00:00",
+  anniversaryDate: "2026-09-28T00:00:00",
+  herName: "حبيبتي",
+  images: [
+    { src: "", date: "28 سبتمبر 2025", title: "البداية" },
+    { src: "", date: "أول أسبوع", title: "أول كلام" },
+    { src: "", date: "في النص", title: "أحلى المواقف" },
+    { src: "", date: "دلوقتي", title: "لسه مكملين" }
+  ],
+  musicSrc: "" // ضع رابط ملف صوتي لو حبيت (mp3)
+};
+</script>
+<!-- ================================================ -->
+
+<div id="stars"></div>
+
+<!-- Intro -->
+<div id="intro" class="section">
+  <h1 class="reveal in">في حكاية بدأت من سنة...</h1>
+  <div class="date reveal in" style="transition-delay:.3s">28 • 09 • 2025</div>
+  <button id="startBtn" class="reveal in" style="transition-delay:.6s">ابدأ الحكاية ✨</button>
+</div>
+
+<div id="app">
+
+  <section class="section" id="countdown-sec">
+    <h2 class="title reveal">فاضل على أول سنة بينا...</h2>
+    <div class="timer reveal">
+      <div class="unit"><div class="num" id="d"><span>0</span></div><div class="lbl">يوم</div></div>
+      <div class="unit"><div class="num" id="h"><span>0</span></div><div class="lbl">ساعة</div></div>
+      <div class="unit"><div class="num" id="m"><span>0</span></div><div class="lbl">دقيقة</div></div>
+      <div class="unit"><div class="num" id="s"><span>0</span></div><div class="lbl">ثانية</div></div>
+    </div>
+  </section>
+
+  <section class="section" id="celebration">
+    <div class="celebrate-title reveal">كملنا سنة ❤️</div>
+    <p class="sub reveal" style="transition-delay:.2s">سنة كاملة من الكلام، الضحك، الحكايات، والمواقف اللي مستحيل تتنسي.</p>
+    <div class="arrow-dates reveal" style="transition-delay:.4s"><b>28 سبتمبر 2025</b><br>↓<br><b>28 سبتمبر 2026</b></div>
+  </section>
+
+  <section class="section" id="livecounter-sec">
+    <h2 class="title reveal">سنة كاملة... ولسه الحكاية مكملة</h2>
+    <div class="counter-grid reveal">
+      <div class="unit"><div class="num" id="ly"><span>0</span></div><div class="lbl">يوم</div></div>
+      <div class="unit"><div class="num" id="lh"><span>0</span></div><div class="lbl">ساعة</div></div>
+      <div class="unit"><div class="num" id="lm"><span>0</span></div><div class="lbl">دقيقة</div></div>
+      <div class="unit"><div class="num" id="ls"><span>0</span></div><div class="lbl">ثانية</div></div>
+    </div>
+  </section>
+
+  <section class="section" id="message-sec">
+    <h2 class="title reveal">رسالة بعد سنة</h2>
+    <div class="msg-card reveal">
+      يمكن سنة بالنسبة للوقت مش حاجة كبيرة، بس لما السنة دي تكون مليانة كلام وحكايات وضحك ومواقف، بتبقى سنة تستاهل تتكتب وتفضل فاكرينها.<br><br>
+      من 28/9/2025 لحد النهارده، عدّى وقت كتير، واتقال كلام أكتر، واتجمعت تفاصيل صغيرة يمكن وقتها مكانتش باينة أهميتها، بس دلوقتي لما أبص عليها ألاقي إنها عملت سنة كاملة من الذكريات.<br><br>
+      فـ شكرًا على كل وقت حلو، على كل مرة اتكلمنا فيها، وعلى كل موقف خلّى السنة دي مختلفة.<br><br>
+      <b>كل سنة وإنتِ من الناس الحلوة اللي وجودها بيعمل فرق ❤️</b>
+    </div>
+  </section>
+
+  <section class="section" id="timeline-sec">
+    <h2 class="title reveal">من أول يوم... لحد النهارده</h2>
+    <div class="timeline" id="timelineList"></div>
+  </section>
+
+  <section class="section" id="details-sec">
+    <h2 class="title reveal">تفاصيل صغيرة... بس مهمة</h2>
+    <div class="detail-cards">
+      <div class="dc reveal"><div class="dc-label">أول يوم اتكلمنا</div><div class="dc-val">28 سبتمبر 2025</div></div>
+      <div class="dc reveal" style="transition-delay:.15s"><div class="dc-label">عدّى على البداية</div><div class="dc-val">سنة كاملة</div></div>
+      <div class="dc reveal" style="transition-delay:.3s"><div class="dc-label">الحكاية</div><div class="dc-val">لسه مستمرة...</div></div>
+    </div>
+  </section>
+
+  <section class="section" id="envWrap">
+    <button id="openEnvBtn" class="reveal">عندي حاجة أخيرة ليكي...</button>
+    <div class="envelope" id="envelope">
+      <div class="env-body"></div>
+      <div class="env-flap" id="envFlap"></div>
+      <div class="env-letter" id="envLetter">💌</div>
+    </div>
+    <div class="final-msg" id="finalMsg">
+      سنة كاملة عدت... ومهما كان اللي جاي، أتمنى تفضل الذكريات الحلوة أكتر من أي حاجة تانية.<br><br>
+      شكرًا إنك كنتِ جزء من السنة دي ❤️
+      <div class="final-line">28/09/2025 → ∞</div>
+    </div>
+  </section>
+
+</div>
+
+<button id="musicBtn" title="موسيقى">🎵</button>
+<canvas id="confetti"></canvas>
+
+<script>
+// ---------- stars background ----------
+(function(){
+  const c=document.createElement('canvas'); document.getElementById('stars').appendChild(c);
+  const ctx=c.getContext('2d'); let w,h,stars=[];
+  function resize(){w=c.width=innerWidth; h=c.height=innerHeight;
+    stars=Array.from({length:Math.min(110,Math.floor(w*h/16000))},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.4+.3,a:Math.random(),s:Math.random()*.02+.005}));}
+  function draw(){ctx.clearRect(0,0,w,h);
+    stars.forEach(st=>{st.a+=st.s; const op=Math.abs(Math.sin(st.a));
+      ctx.beginPath(); ctx.fillStyle=`rgba(230,220,255,${op*.8})`; ctx.arc(st.x,st.y,st.r,0,7); ctx.fill();});
+    requestAnimationFrame(draw);}
+  addEventListener('resize',resize); resize(); draw();
+})();
+
+// ---------- intro ----------
+document.getElementById('startBtn').addEventListener('click',()=>{
+  document.getElementById('intro').style.transition='opacity .8s ease';
+  document.getElementById('intro').style.opacity='0';
+  setTimeout(()=>{
+    document.getElementById('intro').style.display='none';
+    document.getElementById('app').style.display='block';
+    initReveal();
+  },800);
+});
+
+// ---------- reveal on scroll ----------
+function initReveal(){
+  const els=document.querySelectorAll('.reveal');
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.2});
+  els.forEach(el=>io.observe(el));
+}
+
+// ---------- flip-number helper ----------
+function setNum(el, val){
+  const cur = el.querySelector('span');
+  if(cur.textContent == val) return;
+  const next=document.createElement('span');
+  next.textContent=val;
+  next.style.transform='translateY(-100%)'; next.style.opacity='0';
+  next.style.transition='transform .4s ease, opacity .4s ease';
+  el.appendChild(next);
+  cur.style.transition='transform .4s ease, opacity .4s ease';
+  cur.style.transform='translateY(100%)'; cur.style.opacity='0';
+  requestAnimationFrame(()=>{ next.style.transform='translateY(0)'; next.style.opacity='1'; });
+  setTimeout(()=>cur.remove(),420);
+}
+
+// ---------- countdown ----------
+let celebrated=false;
+function tickCountdown(){
+  const now=new Date(); const target=new Date(CONFIG.anniversaryDate);
+  let diff=target-now;
+  if(diff<=0){
+    if(!celebrated){ celebrated=true; runCelebration(); }
+    document.getElementById('countdown-sec').style.display='none';
+    return;
+  }
+  const d=Math.floor(diff/86400000); diff-=d*86400000;
+  const h=Math.floor(diff/3600000); diff-=h*3600000;
+  const m=Math.floor(diff/60000); diff-=m*60000;
+  const s=Math.floor(diff/1000);
+  setNum(document.getElementById('d'),d);
+  setNum(document.getElementById('h'),h);
+  setNum(document.getElementById('m'),m);
+  setNum(document.getElementById('s'),s);
+}
+
+// ---------- live counter since start ----------
+function tickLive(){
+  const now=new Date(); const start=new Date(CONFIG.startDate);
+  let diff=now-start; if(diff<0) diff=0;
+  const d=Math.floor(diff/86400000); diff-=d*86400000;
+  const h=Math.floor(diff/3600000); diff-=h*3600000;
+  const m=Math.floor(diff/60000); diff-=m*60000;
+  const s=Math.floor(diff/1000);
+  setNum(document.getElementById('ly'),d);
+  setNum(document.getElementById('lh'),h);
+  setNum(document.getElementById('lm'),m);
+  setNum(document.getElementById('ls'),s);
+}
+setInterval(()=>{tickCountdown(); tickLive();},1000);
+tickCountdown(); tickLive();
+
+// ---------- celebration + confetti ----------
+function runCelebration(){
+  const sec=document.getElementById('celebration');
+  sec.classList.add('show');
+  sec.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  sec.scrollIntoView({behavior:'smooth'});
+  confettiBurst();
+}
+function confettiBurst(){
+  const canvas=document.getElementById('confetti');
+  const ctx=canvas.getContext('2d');
+  canvas.width=innerWidth; canvas.height=innerHeight;
+  const colors=['#d9a566','#e6a4b4','#8a6fc9','#f3ecf0'];
+  let particles=Array.from({length:140},()=>({
+    x:Math.random()*canvas.width, y:-20-Math.random()*canvas.height*.3,
+    vx:(Math.random()-.5)*2, vy:2+Math.random()*3, size:4+Math.random()*5,
+    color:colors[Math.floor(Math.random()*colors.length)], rot:Math.random()*360, vr:(Math.random()-.5)*6, heart:Math.random()<.25
+  }));
+  let frame=0;
+  function loop(){
+    frame++;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.color;
+      if(p.heart){
+        ctx.beginPath();
+        const s=p.size*.5;
+        ctx.moveTo(0,s); ctx.bezierCurveTo(-s,-s*.4,-s*1.6,s*.6,0,s*1.8);
+        ctx.bezierCurveTo(s*1.6,s*.6,s,-s*.4,0,s);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*.6);
+      }
+      ctx.restore();
+    });
+    if(frame<260) requestAnimationFrame(loop); else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  loop();
+}
+
+// ---------- timeline render ----------
+(function(){
+  const list=document.getElementById('timelineList');
+  CONFIG.images.forEach(item=>{
+    const div=document.createElement('div'); div.className='tl-item reveal';
+    div.innerHTML=`<div class="tl-photo">${item.src?`<img src="${item.src}" alt="">`:'أضف صورة'}</div>
+      <div class="tl-text"><div class="tl-date">${item.date}</div><div class="tl-title">${item.title}</div></div>`;
+    list.appendChild(div);
+  });
+})();
+
+// ---------- envelope ----------
+document.getElementById('openEnvBtn').addEventListener('click',function(){
+  this.style.display='none';
+  const env=document.getElementById('envelope'); env.classList.add('show');
+  setTimeout(()=>{
+    document.getElementById('envFlap').classList.add('open');
+    document.getElementById('envLetter').classList.add('show');
+  },300);
+  setTimeout(()=>{
+    document.getElementById('finalMsg').classList.add('show');
+  },1400);
+});
+
+// ---------- music ----------
+let audio=null, playing=false;
+document.getElementById('musicBtn').addEventListener('click',()=>{
+  if(!CONFIG.musicSrc){ return; }
+  if(!audio){ audio=new Audio(CONFIG.musicSrc); audio.loop=true; }
+  if(playing){ audio.pause(); } else { audio.play().catch(()=>{}); }
+  playing=!playing;
+});
+</script>
+
+</body>
+</html>
